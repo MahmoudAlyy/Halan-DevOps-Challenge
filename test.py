@@ -1,27 +1,23 @@
 import psycopg2
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 
-print("AAA")
+print("SETTING DB NAW")
 
-con = psycopg2.connect(user='postgres' ,host='172.17.0.1', password='password')
-#host.inter
- #ip can be ifxed later in docker compose
+con = psycopg2.connect(database="connections", user='postgres' ,host='db', password='plzwork')
 
-print("AAAAAAAAAAAAAAA")
-# Connect to PostgreSQL DBMS
+#TODO
 con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT);
-
  
-# Obtain a DB Cursor
 cursor = con.cursor();
-name_Database = "SocialMedia";
-sqlCreateDatabase = "create database "+name_Database+";"
 
 try: 
-	cursor.execute(sqlCreateDatabase);
+	cursor.execute(""" CREATE TABLE ip (
+        user_ip VARCHAR(15) NOT NULL,
+        t1  TIMESTAMP
+        );
+        """)
 
 except Exception as e:
 	print(e)
-
 
 con.close()
