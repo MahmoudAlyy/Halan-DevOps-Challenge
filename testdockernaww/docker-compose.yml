@@ -1,0 +1,23 @@
+version: '3'
+services:
+    flask:
+      build: .
+      ports:
+        - 5000:5000
+      volumes: 
+        - ./:/app
+      
+      # w8 for postgres to start b4 trying to access it
+      #command: bash -c 'while !</dev/tcp/db/5432; do sleep 2; done; python test.py; python app.py'
+      command: bash -c 'python test.py;python app.py'
+
+      depends_on:
+        - db
+      restart: always
+
+    db:
+      image: postgres
+      environment:
+        - POSTGRES_PASSWORD=plzwork
+        - POSTGRES_DB=connections
+    
