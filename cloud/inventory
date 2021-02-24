@@ -1,0 +1,3 @@
+api ansible_host=104.197.109.236
+db-master ansible_host=34.71.114.57
+db-salve ansible_host=34.71.135.148

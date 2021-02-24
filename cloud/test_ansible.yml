@@ -1,0 +1,20 @@
+---
+- hosts: all
+  tasks:
+
+  - name: update repo index 
+    apt:
+      update_cache: yes
+#
+- hosts: api
+  tasks:
+
+  - name: install apache2
+    apt:
+      name: apache2
+      state: absent
+
+  - name: Checkout a github repo and use refspec to fetch all pull requests
+    ansible.builtin.git:
+      repo: https://github.com/ansible/ansible-examples.git
+      dest: /src/ansible-examples
