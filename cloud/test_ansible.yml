@@ -7,14 +7,16 @@
       update_cache: yes
 #
 - hosts: api
+  strategy: debug
   tasks:
 
-  - name: install apache2
+  - name: install docker-compose
     apt:
-      name: apache2
-      state: absent
+      name: docker-compose
 
-  - name: Checkout a github repo and use refspec to fetch all pull requests
-    ansible.builtin.git:
-      repo: https://github.com/ansible/ansible-examples.git
-      dest: /src/ansible-examples
+  - name: Copy files
+    synchronize:
+      src: "./Dockerized_app/"
+      dest: "/usr/src/api"
+
+

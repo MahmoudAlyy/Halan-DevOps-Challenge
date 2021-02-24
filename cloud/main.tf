@@ -1,6 +1,6 @@
 variable "project_id" {
   type = string
-  default = "my-project-11-305719"
+  default = "temp-project-305816"
 }
 
 provider "google" {
@@ -13,9 +13,8 @@ provider "google" {
 // enable apis  
 variable "project_services" {
   default = [
-    "iam.googleapis.com",
-    "cloudresourcemanager.googleapis.com",
     "compute.googleapis.com",
+    "iam.googleapis.com",
   ]
 }
 
@@ -26,8 +25,10 @@ resource "google_project_service" "services" {
   disable_dependent_services = true
 }
 
-// TODO concat nane with project id
 resource "google_compute_network" "vpc_network" {
+  depends_on = [ 
+    google_project_service.services
+   ]
   name                    = "${var.project_id}-network"
 
   auto_create_subnetworks = "true"
@@ -139,9 +140,12 @@ resource "google_compute_firewall" "db-server" {
 }
 
 resource "google_compute_project_metadata" "ssh_keys" {
-    metadata = {
+  depends_on = [ 
+    google_project_service.services
+  ]
+  metadata = {
     ssh-keys = "root:${file("test.pub")}"
-}
+  }
 }
 
 output "vm_name" {
