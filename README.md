@@ -9,24 +9,29 @@ A Fully provisioned environment on **GCP** using **Terraform** & **Ansible** tha
 #### 1- Create Project & Service Account
 1. Create a new **GCP** project.
 2. Select **IAM & Admin - Service Accounts** from navigation menu.
-3. Enter a service account name.
-4. Grant **Owner** access & click **Done**.
-5. Click **Actions** on Service Account and choose **Manage keys**.
-6. Click **add key** & Create **new key**.
-7. Choose type **json** and Create.
+3. Create a new Service Account
+4. Enter a service account name & click Create.
+5. Grant **Owner** access & click **Done**.
+6. Click **Actions** on the newly created Service Account and choose **Manage keys**.
+7. Click **add key** & Create **new key**.
+8. Choose type **json** and click Create.
 
 A json file will automatically be downloaded.  
+
 Rename this file to **service_account.json** and copy it to the repository directory.
 #### 2- Get Project ID
 
-Go to **GCP** Home and copy the project ID and paste it in main.tf
+Go to **GCP** Dashboard and copy the project ID and paste it in main.tf
 ```
 variable  "project_id" {
 type  =  string
 default  =  "COPY-YOUR-PROJECT-ID-HERE"
 }
 ```
-#### 3- Install Terraform and Ansible on your local host
+
+
+
+#### 3- Install [Terraform](https://learn.hashicorp.com/tutorials/terraform/install-cli) and [Ansible](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html) on your local host 
 #### 4- Run the script
 ```
 chmod +x script
