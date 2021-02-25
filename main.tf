@@ -10,14 +10,13 @@ provider "google" {
   credentials = file("service_account.json")
 }
 
-
+// need to enable cloud resource manager first b4 enabling the other apis
 resource "google_project_service" "service_resource_manager" {
   project     = var.project_id
   service    = "cloudresourcemanager.googleapis.com"
   disable_dependent_services = true
 }
-
-//  service    = "cloudbilling.googleapis.com"  
+//
 
 // enable apis  
 variable "project_services" {
@@ -38,13 +37,13 @@ resource "google_project_service" "services" {
   service    = var.project_services[count.index]
   disable_dependent_services = true
 }
+//
 
 resource "google_compute_network" "vpc_network" {
   depends_on = [ 
     google_project_service.services
    ]
   name = "${var.project_id}-network"
-  // TODO test
   auto_create_subnetworks = "true"
 }
 
@@ -68,14 +67,9 @@ resource "google_compute_instance" "api" {
 }
 
 
-
 resource "google_sql_database_instance" "master" {
   name  = "master-21"
   region  = "us-central1"
-
-  //***
-  deletion_protection = "false"
-  //***
 
   database_version = "POSTGRES_11"
 
@@ -145,7 +139,9 @@ resource "google_service_networking_connection" "private_vpc_connection" {
   service                 = "servicenetworking.googleapis.com"
   reserved_peering_ranges = [google_compute_global_address.private_ip_address.name]
 }
+//
 
+// user and password for db
 resource "google_sql_user" "main" {
   depends_on = [
     google_sql_database_instance.master
@@ -154,7 +150,9 @@ resource "google_sql_user" "main" {
   instance = google_sql_database_instance.master.name
   password = "password"
 }
+//
 
+// the db inside the postgres instatnce
 resource "google_sql_database" "main" {
   depends_on = [
     google_sql_user.main
@@ -162,23 +160,12 @@ resource "google_sql_database" "main" {
   name     = "main"
   instance = google_sql_database_instance.master.name
 }
+//
 
-/////
-
-
-
-
-
-
-
-
-
+// to allow ansible to ssh into our instance
 resource "google_compute_firewall" "allow-ssh" {
   name = "allow-ssh"
   network = google_compute_network.vpc_network.self_link
-  //allow {
-  //  protocol = "icmp"
-  //}
   allow {
     protocol = "tcp"
     ports    = ["22"]
@@ -188,10 +175,11 @@ resource "google_compute_firewall" "allow-ssh" {
   source_ranges = ["0.0.0.0/0"]
 
   //If no targetTags are specified, the firewall rule applies to all instances on the specified network.
-  //target_tags   = ["http-server"]
+  //target_tags   = ["allow-ssh"]
 }
+//
 
-
+// allow http
 resource "google_compute_firewall" "web-server" {
   name = "web-server"
   network = google_compute_network.vpc_network.self_link
@@ -205,22 +193,9 @@ resource "google_compute_firewall" "web-server" {
 
   target_tags   = ["web-server"]
 }
+//
 
-
-resource "google_compute_firewall" "db-server" {
-  name = "db-server"
-  network = google_compute_network.vpc_network.self_link
-
-  allow {
-    protocol = "tcp"
-    ports    = ["5432"]
-  }
-
-  source_ranges = ["0.0.0.0/0"]
-
-  target_tags   = ["db-server"]
-}
-
+// load our generated ssh key into metadata - used by ansible
 resource "google_compute_project_metadata" "ssh_keys" {
   depends_on = [ 
     google_project_service.services
@@ -229,16 +204,18 @@ resource "google_compute_project_metadata" "ssh_keys" {
     ssh-keys = "root:${file("root-ssh-key.pub")}"
   }
 }
+//
 
-
-# generate inventory file for Ansible
+// generate inventory file for Ansible containing our instance public IP
 resource "local_file" "inventory" {
   filename = "inventory"
   content = <<-EOT
     api ansible_host=${google_compute_instance.api.network_interface[0].access_config[0].nat_ip}  ansible_python_interpreter=auto
   EOT
 }
+//
 
+// create environment variable for our instace to connect to db using internal IP
 resource "local_file" "api-env" {
   filename = "./Dockerized_app/api.env"
   content = <<-EOT
@@ -248,3 +225,4 @@ resource "local_file" "api-env" {
     PGPASSWORD=${google_sql_user.main.password}
   EOT
 }
+//

@@ -1,6 +1,4 @@
----  
 - hosts: api
-
   tasks:
 
   - name: update repo index 
