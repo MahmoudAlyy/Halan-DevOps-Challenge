@@ -4,14 +4,13 @@
 ssh-keygen -t rsa -C root -f ./root-ssh-key -q -P "" <<< n  > /dev/null
 echo root-ssh-key generated...
 
-
-
 terraform init
 
 terraform apply -auto-approve
-echo terraform applied...
 
-read -r firstline<inventory
-echo $firstline
+echo "Ansible starting..."
+ansible-playbook -i inventory --key-file ./root-ssh-key --ssh-common-args='-o StrictHostKeyChecking=no' --user root ansible.yml
 
-#ansible-playbook -i inventory --key-file ./root-ssh-key --ssh-common-args='-o StrictHostKeyChecking=no' --user root ansible.yml
+read -a firstline<inventory
+IFS== read -r left ip <<< "${firstline[1]}"
+echo "visit http://$ip/"

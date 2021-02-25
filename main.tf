@@ -1,7 +1,7 @@
 // use varaible thingy
 variable "project_id" {
   type = string
-  default = "temp-project-305816"
+  default = "final-test-305915"
 }
 
 provider "google" {
@@ -10,6 +10,15 @@ provider "google" {
   zone    = "us-central1-c"
   credentials = file("service_account.json")
 }
+
+
+resource "google_project_service" "service_resource_manager" {
+  project     = var.project_id
+  service    = "cloudresourcemanager.googleapis.com"
+  disable_dependent_services = true
+}
+
+//  service    = "cloudbilling.googleapis.com"  
 
 // enable apis  
 variable "project_services" {
@@ -20,7 +29,11 @@ variable "project_services" {
     "servicenetworking.googleapis.com",
   ]
 }
+
 resource "google_project_service" "services" {
+  depends_on = [ 
+    google_project_service.service_resource_manager,
+   ]
   count   = length(var.project_services)
   project     = var.project_id
   service    = var.project_services[count.index]
@@ -218,19 +231,6 @@ resource "google_compute_project_metadata" "ssh_keys" {
   }
 }
 
-output "vm_name" {
-  value = google_compute_instance.api.name
-}
-output "public_ip" {
-  value = google_compute_instance.api.network_interface[0].access_config[0].nat_ip
-}
-output "private_ip" {
-  value = google_compute_instance.api.network_interface[0].network_ip
-}
-
-output "test" {
-  value = google_sql_database_instance.master.private_ip_address
-}
 
 # generate inventory file for Ansible
 resource "local_file" "inventory" {
