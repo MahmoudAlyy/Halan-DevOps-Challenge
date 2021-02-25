@@ -1,3 +1,1 @@
-api ansible_host=35.202.22.92
-db-master ansible_host=34.122.179.188
-db-salve ansible_host=104.154.197.55
+api ansible_host=34.122.179.188  ansible_python_interpreter=auto

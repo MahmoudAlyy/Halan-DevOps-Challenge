@@ -1,11 +1,16 @@
 import psycopg2
+import os
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 
-print("SETTING DB NAW")
+print("Creating ip Table in Database...")
 
-con = psycopg2.connect(database="connections", user='postgres' ,host='db', password='plzwork')
+host = os.getenv('PGHOST')
+database = os.environ.get('PGDATABASE')
+user = os.getenv('PGUSER')
+password = os.environ.get('PGPASSWORD')
 
-#TODO
+con = psycopg2.connect(host=host, database=database, user=user, password=password)
+
 con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT);
  
 cursor = con.cursor();

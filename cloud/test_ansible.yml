@@ -1,14 +1,11 @@
----
-- hosts: all
+---  
+- hosts: api
+
   tasks:
 
   - name: update repo index 
     apt:
       update_cache: yes
-#
-- hosts: api
-  strategy: debug
-  tasks:
 
   - name: install docker-compose
     apt:
@@ -18,5 +15,8 @@
     synchronize:
       src: "./Dockerized_app/"
       dest: "/usr/src/api"
+
+  - name: run docker compose
+    ansible.builtin.command: docker-compose --project-directory /usr/src/api --file /usr/src/api/docker-compose.yml up -d
 
 

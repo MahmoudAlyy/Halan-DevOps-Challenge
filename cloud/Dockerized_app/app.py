@@ -1,10 +1,18 @@
 from flask import Flask,request
 import datetime
 import psycopg2
+import os
 
 app = Flask(__name__)
 
-con = psycopg2.connect(database='connections', user='postgres', host='db', password='plzwork')
+# get env variables
+host = os.getenv('PGHOST')
+database = os.environ.get('PGDATABASE')
+user = os.getenv('PGUSER')
+password = os.environ.get('PGPASSWORD')
+
+con = psycopg2.connect(host=host, database=database, user=user, password=password)
+
 cursor = con.cursor();
 
 @app.route('/')
