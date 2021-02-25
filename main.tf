@@ -88,7 +88,7 @@ resource "google_sql_database_instance" "master" {
 
 resource "google_sql_database_instance" "read_replica" {
   name                 = "replica-21"
-  master_instance_name = "${google_sql_database_instance.master.name}"
+  master_instance_name = google_sql_database_instance.master.name
   region  = "us-central1"
   database_version     = "POSTGRES_11"
 
