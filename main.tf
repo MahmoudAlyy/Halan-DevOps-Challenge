@@ -1,4 +1,3 @@
-// use varaible thingy
 variable "project_id" {
   type = string
   default = "COPY-YOUR-PROJECT-ID-HERE"
