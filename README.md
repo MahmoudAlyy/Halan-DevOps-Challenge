@@ -1,20 +1,22 @@
+
 # Halan-DevOps-Challenge
 A Fully provisioned environment on **GCP** using **Terraform** & **Ansible** that deploys:
-1. VM Instance running a **Dockerized** flask application.
-2. SQL Instance (Postgres)
-3. SQL Read replica
+1. VM instance running a **Dockerized** flask application.
+2. SQL instance (Postgres).
+3. SQL read replica instance.
 
 ## Setup
 #### 1- Create Project & Service Account
-1. Create a new **GCP** project
-2. Select **IAM & Admin - Service Accounts** from navigation menu
-3. Enter a service account name
-4. Grant **Owner** access & click **Done**
-5. Click **Actions** on Service Account and choose **Manage keys**
-6. Click **add key** & Create **new key**
-7. Choose type **json** and Create
+1. Create a new **GCP** project.
+2. Select **IAM & Admin - Service Accounts** from navigation menu.
+3. Enter a service account name.
+4. Grant **Owner** access & click **Done**.
+5. Click **Actions** on Service Account and choose **Manage keys**.
+6. Click **add key** & Create **new key**.
+7. Choose type **json** and Create.
 
-A json file will automatically be downloaded.
+A json file will automatically be downloaded.  
+
 Rename this file to **service_account.json** and copy it to the repository directory.
 #### 2- Get Project ID
 
@@ -25,7 +27,7 @@ type  =  string
 default  =  "COPY-YOUR-PROJECT-ID-HERE"
 }
 ```
-#### 3- Install Terraform and Ansible
+#### 3- Install Terraform and Ansible on your local host
 #### 4- Run the script
 ```
 chmod +x script
@@ -36,15 +38,15 @@ The script will output the Public IP for the Compute instance.
 
 
 ## Under the Hood
-First the script creates an SSH (stored in the metadata by Terraform and used by Ansible to configure compute instance), then it runs Terraform & Ansible.
+First the script creates an SSH (stored in the metadata by Terraform and used by Ansible to configure the Compute instance), then it runs Terraform & Ansible.
 
-### Terraform 
+### Terraform:
 - Enables the following APIs:
 compute, iam, sqladmin, servicenetworking & cloudresourcemanager.
 - Creates a new VPC for Compute instance.
 - Creates Compute instance.
 - Creates a master SQL instance running Postgres which is only accessible using an internal IP address.
-- A read replica.
+- Creates a read replica for master SQL instance.
  - VPC peering between Compute instance and SQL instance.
 - User, Password & Database for SQL instance.
 - Firewall rule to allow SSH and HTTP into Compute instance.
