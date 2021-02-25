@@ -16,7 +16,6 @@ A Fully provisioned environment on **GCP** using **Terraform** & **Ansible** tha
 7. Choose type **json** and Create.
 
 A json file will automatically be downloaded.  
-
 Rename this file to **service_account.json** and copy it to the repository directory.
 #### 2- Get Project ID
 
