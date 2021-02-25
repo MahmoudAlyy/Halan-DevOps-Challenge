@@ -214,7 +214,7 @@ resource "google_compute_project_metadata" "ssh_keys" {
     google_project_service.services
   ]
   metadata = {
-    ssh-keys = "root:${file("test.pub")}"
+    ssh-keys = "root:${file("root-ssh-key.pub")}"
   }
 }
 
@@ -236,7 +236,7 @@ output "test" {
 resource "local_file" "inventory" {
   filename = "inventory"
   content = <<-EOT
-    api ansible_host=${google_compute_instance.api.network_interface[0].access_config[0].nat_ip}
+    api ansible_host=${google_compute_instance.api.network_interface[0].access_config[0].nat_ip}  ansible_python_interpreter=auto
   EOT
 }
 
@@ -249,6 +249,3 @@ resource "local_file" "api-env" {
     PGPASSWORD=${google_sql_user.main.password}
   EOT
 }
-
-//  db-master ansible_host=${google_compute_instance.db-master.network_interface[0].access_config[0].nat_ip}
-//  db-salve ansible_host=${google_compute_instance.db-slave.network_interface[0].access_config[0].nat_ip}
