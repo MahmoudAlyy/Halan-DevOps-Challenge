@@ -8,7 +8,7 @@ provider "google" {
   project = var.project_id
   region  = "us-central1"
   zone    = "us-central1-c"
-  credentials = file("source_account.json")
+  credentials = file("service_account.json")
 }
 
 // enable apis  
