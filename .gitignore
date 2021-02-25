@@ -168,4 +168,4 @@ terraform.rc
 inventory
 root-ssh-key
 root-ssh-key.pub
-
+service_account.json*

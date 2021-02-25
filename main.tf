@@ -1,7 +1,7 @@
 // use varaible thingy
 variable "project_id" {
   type = string
-  default = "final-test-305915"
+  default = "COPY-YOUR-PROJECT-ID-HERE"
 }
 
 provider "google" {
